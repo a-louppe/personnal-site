@@ -11,7 +11,7 @@ the required-check branch protection on `main` (phase 2) is what stops it from m
 
 | File                               | Purpose                                                                                                                                                                  |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `wrangler.jsonc`                   | Worker name `personal-site`, assets directory, `not_found_handling: "404-page"`. No `main`, so no Worker runs.                                                           |
+| `wrangler.jsonc`                   | Worker name `personal-site`, assets directory, `not_found_handling: "404-page"`. No `main`, so no Worker runs. Empty `previews` block, which `wrangler preview` requires.                                                           |
 | `apps/site/public/_headers`        | Security headers, long-lived cache on hashed JS/CSS/fonts, `no-cache` on HTML, `X-Robots-Tag: noindex` on `*.workers.dev` / `*.pages.dev`.                               |
 | `apps/site/src/app/not-found`      | The 404 page. Angular does not prerender `**` routes, so a real `/404` route is prerendered and `scripts/postbuild.mjs` moves it to `404.html`.                         |
 | `apps/site/site.config.json`       | The one place for the production origin. Feeds canonical, `og:url`, `sitemap.xml` and `robots.txt`. **Currently the `*.workers.dev` URL: change it when a custom domain is added.** |
