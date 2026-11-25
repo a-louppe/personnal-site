@@ -15,7 +15,9 @@
     "typecheck": "tsc --noEmit -p apps/site/tsconfig.app.json && tsc --noEmit -p apps/site/tsconfig.spec.json && tsc --noEmit -p packages/dither/tsconfig.json && tsc --noEmit -p packages/game/tsconfig.json && tsc --noEmit -p e2e/tsconfig.json",
     "size": "node scripts/check-bundle-size.mjs",
     "check:headers": "node scripts/check-headers.mjs",
-    "lhci": "lhci autorun"
+    "lhci": "lhci autorun",
+    "tokens": "node scripts/gen-tokens.mjs",
+    "tokens:check": "node scripts/gen-tokens.mjs --check"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.1",
