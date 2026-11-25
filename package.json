@@ -5,7 +5,7 @@
   "packageManager": "pnpm@12.23.0",
   "scripts": {
     "dev": "pnpm --filter site start",
-    "build": "pnpm --filter site build",
+    "build": "pnpm --filter site build && node scripts/postbuild.mjs",
     "test": "pnpm -r test",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -14,6 +14,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit -p apps/site/tsconfig.app.json && tsc --noEmit -p apps/site/tsconfig.spec.json && tsc --noEmit -p packages/dither/tsconfig.json && tsc --noEmit -p packages/game/tsconfig.json && tsc --noEmit -p e2e/tsconfig.json",
     "size": "node scripts/check-bundle-size.mjs",
+    "check:headers": "node scripts/check-headers.mjs",
     "lhci": "lhci autorun"
   },
   "devDependencies": {
