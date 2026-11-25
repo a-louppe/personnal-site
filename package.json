@@ -1,0 +1,25 @@
+{
+  "name": "personal-site",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.23.0",
+  "scripts": {
+    "dev": "pnpm --filter site start",
+    "build": "pnpm --filter site build",
+    "test": "pnpm -r test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "e2e": "echo \"e2e: added in Phase 2\"",
+    "game:dev": "pnpm --filter @site/game dev"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "angular-eslint": "^22.8.0",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.74.0",
+    "vitest": "^5.1.1"
+  }
+}

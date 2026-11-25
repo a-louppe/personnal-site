@@ -1,0 +1,9 @@
+node_modules
+dist
+.angular
+coverage
+pnpm-lock.yaml
+.claude
+docs
+skills-lock.json
+art

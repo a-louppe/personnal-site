@@ -1,9 +1,32 @@
+# Dependencies and output
 node_modules/
 dist/
 .angular/
 coverage/
+out-tsc/
+tmp/
+__screenshots__/
+*.tsbuildinfo
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Env
 .env
 .env.*
 !.env.example
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+.sass-cache/
 .DS_Store
+Thumbs.db
+
+# Claude
 .claude/settings.local.json
