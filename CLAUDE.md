@@ -4,26 +4,27 @@ Portfolio site for Andrey, a front-oriented full-stack Angular developer. The si
 
 ## Stack
 
-- pnpm workspace (pnpm 12, Node 26, see `.nvmrc`). Angular 22 (standalone, zoneless, signals, new control flow, SCSS, OnPush), prerendered (SSG, `outputMode: "static"`) and deployed as a static site.
+- pnpm workspace (pnpm 12, Node 26, see `.nvmrc`). Angular 22 (standalone, zoneless, signals, new control flow, SCSS, OnPush), prerendered (SSG, `outputMode: "static"`) and deployed as a static site on Cloudflare Workers Static Assets (`wrangler.jsonc`, `docs/deploy.md`).
 - TypeScript is pinned to `~6.0.3`: Angular 22 requires `>=6.0 <6.1` and typescript-eslint requires `<6.1`. Do not upgrade to TS 7 until both support it.
 - Unit tests use Vitest everywhere. Lint is one root flat `eslint.config.js`. Format is Prettier.
 
 ### Commands (run from the repo root)
 
-| Command             | What it does                                                                                                   |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `pnpm install`      | Install all workspace dependencies                                                                             |
-| `pnpm dev`          | Angular dev server for `apps/site`                                                                             |
-| `pnpm build`        | Production build + prerender of `apps/site` (output: `apps/site/dist/site/browser`)                            |
-| `pnpm test`         | Run unit tests in every workspace project                                                                      |
-| `pnpm lint`         | ESLint on the whole repo                                                                                       |
-| `pnpm format`       | Prettier write on the whole repo                                                                               |
-| `pnpm format:check` | Prettier check (CI)                                                                                            |
-| `pnpm typecheck`    | `tsc --noEmit` for the site, both packages and `e2e/`                                                          |
-| `pnpm size`         | Gzip the initial JS from `index.html` after a build; warn >100 kB, fail >150 kB                                |
-| `pnpm e2e`          | Build, then Playwright (Chromium) against the static output; first run `pnpm exec playwright install chromium` |
-| `pnpm lhci`         | Lighthouse CI on the build (needs Chrome; set `CHROME_PATH` if not found)                                      |
-| `pnpm game:dev`     | Vite playground for `packages/game`                                                                            |
+| Command              | What it does                                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `pnpm install`       | Install all workspace dependencies                                                                                |
+| `pnpm dev`           | Angular dev server for `apps/site`                                                                                |
+| `pnpm build`         | Production build + prerender of `apps/site`, then `scripts/postbuild.mjs` (output: `apps/site/dist/site/browser`) |
+| `pnpm test`          | Run unit tests in every workspace project                                                                         |
+| `pnpm lint`          | ESLint on the whole repo                                                                                          |
+| `pnpm format`        | Prettier write on the whole repo                                                                                  |
+| `pnpm format:check`  | Prettier check (CI)                                                                                               |
+| `pnpm typecheck`     | `tsc --noEmit` for the site, both packages and `e2e/`                                                             |
+| `pnpm size`          | Gzip the initial JS from `index.html` after a build; warn >100 kB, fail >150 kB                                   |
+| `pnpm check:headers` | After a build: checks `_headers`, `404.html`, `robots.txt`, `sitemap.xml` (see `docs/deploy.md`)                  |
+| `pnpm e2e`           | Build, then Playwright (Chromium) against the static output; first run `pnpm exec playwright install chromium`    |
+| `pnpm lhci`          | Lighthouse CI on the build (needs Chrome; set `CHROME_PATH` if not found)                                         |
+| `pnpm game:dev`      | Vite playground for `packages/game`                                                                               |
 
 ### Architecture
 
