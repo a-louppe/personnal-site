@@ -10,16 +10,20 @@ Portfolio site for Andrey, a front-oriented full-stack Angular developer. The si
 
 ### Commands (run from the repo root)
 
-| Command         | What it does                                                                        |
-| --------------- | ----------------------------------------------------------------------------------- |
-| `pnpm install`  | Install all workspace dependencies                                                  |
-| `pnpm dev`      | Angular dev server for `apps/site`                                                  |
-| `pnpm build`    | Production build + prerender of `apps/site` (output: `apps/site/dist/site/browser`) |
-| `pnpm test`     | Run unit tests in every workspace project                                           |
-| `pnpm lint`     | ESLint on the whole repo                                                            |
-| `pnpm format`   | Prettier write on the whole repo                                                    |
-| `pnpm e2e`      | Placeholder until Phase 2 (Playwright)                                              |
-| `pnpm game:dev` | Vite playground for `packages/game`                                                 |
+| Command             | What it does                                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `pnpm install`      | Install all workspace dependencies                                                                             |
+| `pnpm dev`          | Angular dev server for `apps/site`                                                                             |
+| `pnpm build`        | Production build + prerender of `apps/site` (output: `apps/site/dist/site/browser`)                            |
+| `pnpm test`         | Run unit tests in every workspace project                                                                      |
+| `pnpm lint`         | ESLint on the whole repo                                                                                       |
+| `pnpm format`       | Prettier write on the whole repo                                                                               |
+| `pnpm format:check` | Prettier check (CI)                                                                                            |
+| `pnpm typecheck`    | `tsc --noEmit` for the site, both packages and `e2e/`                                                          |
+| `pnpm size`         | Gzip the initial JS from `index.html` after a build; warn >100 kB, fail >150 kB                                |
+| `pnpm e2e`          | Build, then Playwright (Chromium) against the static output; first run `pnpm exec playwright install chromium` |
+| `pnpm lhci`         | Lighthouse CI on the build (needs Chrome; set `CHROME_PATH` if not found)                                      |
+| `pnpm game:dev`     | Vite playground for `packages/game`                                                                            |
 
 ### Architecture
 
@@ -29,7 +33,7 @@ packages/dither/  Palettes, Bayer matrices, dither pass, 2D canvas helpers. Fram
 packages/game/    The easter egg (game loop, input, player, boss, scenes). Framework-free, own Vite playground.
 art/              Source art (Aseprite, Blender, concepts). Tracked with Git LFS.
 docs/             BUILD_PLAN.md, decisions (ADR).
-e2e/              Playwright smoke tests (Phase 2).
+e2e/              Playwright tests (smoke, axe accessibility, lazy game chunk).
 ```
 
 Packages expose their TypeScript source (`"exports": { ".": "./src/index.ts" }`); the aliases `@site/dither` and `@site/game` are in `tsconfig.base.json`.

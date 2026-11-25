@@ -30,3 +30,9 @@ Thumbs.db
 
 # Claude
 .claude/settings.local.json
+.lighthouseci/
+test-results/
+playwright-report/
+
+# chrome-launcher under WSL writes Windows-style temp dirs here
+C:*
