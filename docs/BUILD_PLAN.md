@@ -98,13 +98,30 @@ Use the implementer agent, then code-reviewer.
 ## Phase 3: deployment
 
 ```text
-Set up static deployment on Cloudflare Pages for apps/site (prerendered output folder). Write docs/deploy.md with the exact steps I must do in the Cloudflare dashboard (connect the GitHub repo, build command, output directory, Node version env var) and what you configured in the repo (e.g. _headers for caching and security headers, _redirects if needed, a 404 page). Preview deployments on every PR, production on main.
-Do not create any account or secret yourself. List what I must click.
+Set up static deployment for apps/site using Cloudflare Workers Static Assets with Workers Builds' Git integration (chosen after step 0 showed Cloudflare now recommends it over Pages) (Cloudflare builds and deploys on its own; no GitHub secrets, no wrangler in CI). Write docs/deploy.md with the exact steps I must do in the Cloudflare dashboard and what you configured in the repo.
+
+0. First check current Cloudflare docs (Context7 or web) on whether Pages is still the recommended path for new static sites or whether Workers with static assets replaces it. If it has changed, stop and tell me before building. `_headers` and `_redirects` work on both, so the repo work should carry over.
+1. Build settings, for a monorepo built from the repo root: build command `pnpm install --frozen-lockfile && pnpm build`, output directory `apps/site/dist/site/browser`, production branch `main`, previews for pull requests. Confirm that the build image supports Node 26 (.nvmrc) and pnpm 12; if not, list the NODE_VERSION and PNPM_VERSION env vars to set, with values. Note that the build must not need Git LFS content from art/.
+2. Prerender a real 404 page so that 404.html exists in the output (Cloudflare serves it automatically for unknown paths). Do NOT add a catch-all rewrite to index.html in _redirects: unknown URLs must return 404, not 200. Only add _redirects if a concrete need appears.
+3. apps/site/public/_headers (copied to the build output):
+   - Cache-Control: immutable, max-age one year, on hashed JS, CSS and font files (this includes the lazy game chunk); no-cache on HTML.
+   - X-Content-Type-Options, Referrer-Policy, Permissions-Policy, HSTS.
+   - A Content-Security-Policy. Prerendered Angular output has inline styles and scripts, so use hashes or 'unsafe-inline'. Pick one and explain why in docs/deploy.md.
+   - X-Robots-Tag: noindex on https://*.pages.dev/* so previews and the default domain are not indexed.
+4. One config value for the production site origin (used for canonical URL, Open Graph, sitemap.xml and robots.txt), with a note that the custom domain will change it later.
+5. Verifiable checks:
+   - scripts/check-headers.mjs (Node built-ins only), run as `pnpm check:headers` after build: asserts that _headers exists in the output with the rules above and that 404.html exists. Add it to ci.yml after `pnpm size`.
+   - Document in docs/deploy.md how to run Lighthouse CI against a preview URL (same assertions, 0.95 or above). Do not add it to ci.yml.
+   - The local sirv server in e2e ignores _headers. Do not add wrangler. Real header checks are manual curl commands against the preview, listed in docs/deploy.md.
+6. Add "Bash(pnpm check:headers:*)" to the .claude/settings.json allow list. Update the commands table in CLAUDE.md.
+
+docs/deploy.md must also say that PRs from forks get no preview, and that pushes to main deploy to production. Do not create any account or secret yourself. List what I must click.
+Use the implementer agent, then code-reviewer.
 ```
 
-**Done when:** the main branch is live on a `*.pages.dev` URL, and a PR gets its own preview URL. (A custom domain can come later.)
+**Done when:** `pnpm check:headers` passes locally and in CI. `404.html` exists in the build output. Then, by hand, following `docs/deploy.md`: `main` is live on a `*.pages.dev` URL, a PR gets its own preview URL, and the curl checks on the preview show the expected headers. (A custom domain can come later.)
 
-Andrey does the dashboard part by hand, following `docs/deploy.md`.
+Andrey does the dashboard part by hand, following `docs/deploy.md`. Reminder: the required-check branch protection from phase 2 is what stops a red PR from merging, because Cloudflare's build runs separately from the CI workflow.
 
 ---
 

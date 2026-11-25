@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ditherVersion } from '@site/dither';
+import { Seo } from '../seo';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,10 @@ import { ditherVersion } from '@site/dither';
 })
 export class Home {
   protected readonly version = ditherVersion();
+
+  constructor() {
+    inject(Seo).setPage('/');
+  }
 
   protected async loadGame(): Promise<void> {
     try {

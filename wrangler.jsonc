@@ -1,0 +1,11 @@
+{
+  // Static site served by Cloudflare Workers Static Assets (no Worker script).
+  // Workers Builds runs `pnpm build`, then `npx wrangler deploy` from the repo root.
+  "name": "personal-site",
+  "compatibility_date": "2026-11-25",
+  "assets": {
+    "directory": "./apps/site/dist/site/browser",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+  },
+}
