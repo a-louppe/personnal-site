@@ -3,6 +3,8 @@
   // Workers Builds runs `pnpm build`, then `npx wrangler deploy` from the repo root.
   "name": "personal-site",
   "compatibility_date": "2026-11-25",
+  // Required by `wrangler preview` (preview builds on non-production branches). May stay empty.
+  "previews": {},
   "assets": {
     "directory": "./apps/site/dist/site/browser",
     "not_found_handling": "404-page",
