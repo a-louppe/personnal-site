@@ -72,17 +72,26 @@ Commit: `chore: scaffold pnpm workspace, Angular app and engine packages`.
 ## Phase 2: quality gates and CI
 
 ```text
-Add the quality gates from docs/BUILD_PLAN.md rule 4.
+Add the quality gates from docs/BUILD_PLAN.md rules 1 and 4. The static build is in apps/site/dist/site/browser.
 
-1. Playwright in e2e/: one smoke test that loads the prerendered home page, checks the title, the h1 and that there are no console errors. Script: pnpm e2e (build + serve dist + run).
-2. Angular budgets in apps/site/angular.json: initial bundle warning at 130 kB and error at 150 kB (gzipped transfer is what matters; set the raw-size budgets accordingly and explain the numbers you chose).
-3. GitHub Actions workflow .github/workflows/ci.yml on pull requests and main: pnpm install with cache, lint, test, build, e2e, and Lighthouse CI (treosh/lighthouse-ci-action or @lhci/cli) against the static build with assertions: performance, accessibility, best-practices, seo >= 0.95.
-4. A pull request template in .github/pull_request_template.md: what, why, how verified, screenshots.
+1. Static checks: a root `typecheck` script (tsc --noEmit for each package, including the game playground) and a `format:check` script (prettier --check .).
+2. Bundle budgets, in two layers:
+   - apps/site/angular.json: raw-size budgets as a backstop (Angular measures raw bytes, not gzip; today 234 kB raw is 65 kB gzipped). Pick warning/error values from that ratio and explain them.
+   - scripts/check-bundle-size.mjs (Node built-ins only, zlib): gzips the initial chunks the browser loads from index.html and fails above 150 kB, warns above 100 kB. Run it after build as `pnpm size`.
+3. Playwright in e2e/ (root devDependencies, Chromium only, webServer serving apps/site/dist/site/browser with a small static server such as sirv-cli). Tests:
+   - smoke: the prerendered home page has the right title and h1, no console errors, and no console warnings starting with "NG0" (hydration problems).
+   - accessibility: @axe-core/playwright finds no violations on the home page.
+   - lazy game (rule 1 at runtime): no request for the game chunk on load; clicking "Load game" fetches it.
+   Script: pnpm e2e (build, then run Playwright). Include e2e/ in ESLint and give it a tsconfig.
+4. GitHub Actions .github/workflows/ci.yml on pull requests and pushes to main: pnpm/action-setup (reads packageManager), setup-node with node-version-file .nvmrc and pnpm cache, pnpm install --frozen-lockfile, then format:check, lint, typecheck, test, build, size, e2e (cache the Playwright browsers, install with --with-deps chromium), and Lighthouse CI with @lhci/cli (lighthouserc.json: staticDistDir, numberOfRuns 3, median assertions: performance, accessibility, best-practices, seo >= 0.95). permissions: contents: read; a concurrency group that cancels older runs on the same ref.
+5. A pull request template in .github/pull_request_template.md: what, why, how verified, screenshots.
+6. Add "Bash(pnpm exec playwright:*)" to the .claude/settings.json allow list, plus the new scripts (typecheck, format:check, size). Update the commands in CLAUDE.md.
 
+New dependencies allowed in this phase: @playwright/test, @axe-core/playwright, sirv-cli, @lhci/cli. Nothing else.
 Use the implementer agent, then code-reviewer.
 ```
 
-**Done when:** a test PR shows all checks green. A deliberately broken test makes CI fail, and you then revert it.
+**Done when:** every new script passes locally. A test PR shows all checks green. A deliberately broken test makes CI fail, and you then revert it. Then, in GitHub (by hand): Settings → Branches → protect `main` and mark the CI job as a required check, or green checks will not block a merge.
 
 ---
 
